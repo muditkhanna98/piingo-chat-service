@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: piingo-chat-service
+  config:
+    import: optional:configserver:http://localhost:8888
