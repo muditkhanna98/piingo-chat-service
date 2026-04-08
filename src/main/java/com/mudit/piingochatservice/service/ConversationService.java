@@ -9,6 +9,7 @@ import com.mudit.piingochatservice.exception.InvalidConversationRequestException
 import com.mudit.piingochatservice.repository.ConversationRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ConversationParticipantRepository conversationParticipantRepository;
 
+    @Transactional
     public UUID createNewConversation(CreateConversationRequest conversationRequest) {
         if (conversationRequest.participantIds() == null || conversationRequest.participantIds().isEmpty()) {
             throw new InvalidConversationRequestException("A conversation must have at least one participant.");
