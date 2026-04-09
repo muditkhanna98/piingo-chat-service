@@ -1,12 +1,11 @@
 package com.mudit.piingochatservice.entity;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Entity
 @Table(name = "conversation_participants")
@@ -17,4 +16,10 @@ import lombok.Setter;
 public class ConversationParticipant {
     @EmbeddedId
     private ConversationParticipantId id;
+
+    @ManyToOne
+    @MapsId("conversationId")
+    @JoinColumn(name = "conversation_id")
+    private Conversation conversation;
+
 }

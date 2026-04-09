@@ -1,8 +1,7 @@
 # Piingo Chat Service — Features Todo
 
 ## Conversations
-- [ ] Get a conversation by ID
-- [ ] Get all conversations for a user (inbox)
+- [ ] Get all conversations for a user (inbox) — include participants and last message preview in response
 - [ ] Delete a conversation
 - [ ] Validate that participant user IDs actually exist before creating a conversation (requires HTTP call to user-service — inter-service communication)
 
@@ -14,8 +13,8 @@
 
 ## Participants
 - [ ] Get all participants in a conversation
-- [ ] Add a participant to a conversation (group chat)
-- [ ] Remove a participant from a conversation
+
+> Group chat features (add/remove participant) are out of scope for 1-1 messaging — revisit when group chat is added.
 
 ## Real-time
 - [ ] WebSocket support — push new messages to connected clients in real time

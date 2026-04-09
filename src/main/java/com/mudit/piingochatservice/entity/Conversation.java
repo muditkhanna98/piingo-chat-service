@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +29,10 @@ public class Conversation {
 
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
+
+    @OneToMany(mappedBy = "conversation", cascade = CascadeType.PERSIST)
+    private List<ConversationParticipant> participants;
+
 
     @PrePersist
     protected void onCreate() {

@@ -24,26 +24,32 @@ public class ConversationService {
     @Transactional
     public UUID createNewConversation(CreateConversationRequest conversationRequest) {
         if (conversationRequest.participantIds() == null || conversationRequest.participantIds().isEmpty()) {
-            throw new InvalidConversationRequestException("A conversation must have at least one participant.");
+            throw new InvalidConversationRequestException("A conversation must have a participant");
+        }
+        if (conversationRequest.participantIds().size() > 1) {
+            throw new InvalidConversationRequestException("Only 1-1 conversations are supported for now. " +
+                    "Group chats to be available soon");
         }
 
         Conversation conversation = new Conversation();
         conversation.setCreatedBy(conversationRequest.createdBy());
-        conversationRepository.save(conversation);
 
         List<UUID> allParticipants = new ArrayList<>(conversationRequest.participantIds());
         allParticipants.add(conversationRequest.createdBy());
 
         List<ConversationParticipant> participants = allParticipants.stream()
                 .map(participantId -> {
-                    ConversationParticipantId conversationParticipantId = new ConversationParticipantId();
-                    conversationParticipantId.setConversationId(conversation.getId());
-                    conversationParticipantId.setUserId(participantId);
-                    return new ConversationParticipant(conversationParticipantId);
+                    ConversationParticipantId cpId = new ConversationParticipantId();
+                    cpId.setUserId(participantId);
+                    ConversationParticipant cp = new ConversationParticipant();
+                    cp.setId(cpId);
+                    cp.setConversation(conversation);
+                    return cp;
                 })
                 .toList();
 
-        conversationParticipantRepository.saveAll(participants);
+        conversation.setParticipants(participants);
+        conversationRepository.save(conversation);
         return conversation.getId();
     }
 }
