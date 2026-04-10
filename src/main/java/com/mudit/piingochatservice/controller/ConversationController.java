@@ -25,4 +25,11 @@ public class ConversationController {
         return ResponseEntity.status(HttpStatus.CREATED).body(conversationId);
     }
 
+    @DeleteMapping("/{conversationId}")
+    @Operation(summary = "Delete a conversation", description = "Deletes a conversation.")
+    public ResponseEntity<String> deleteConversation(@PathVariable UUID conversationId) {
+        conversationService.deleteConversation(conversationId);
+        return ResponseEntity.ok("Conversation deleted successfully");
+    }
+
 }

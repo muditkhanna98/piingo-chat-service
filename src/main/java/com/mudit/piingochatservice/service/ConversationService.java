@@ -5,8 +5,11 @@ import com.mudit.piingochatservice.entity.Conversation;
 import com.mudit.piingochatservice.entity.ConversationParticipant;
 import com.mudit.piingochatservice.entity.ConversationParticipantId;
 import com.mudit.piingochatservice.repository.ConversationParticipantRepository;
+import com.mudit.piingochatservice.exception.ConversationNotFoundException;
 import com.mudit.piingochatservice.exception.InvalidConversationRequestException;
 import com.mudit.piingochatservice.repository.ConversationRepository;
+import com.mudit.piingochatservice.service.client.UserServiceClient;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,7 @@ import java.util.UUID;
 public class ConversationService {
     private final ConversationRepository conversationRepository;
     private final ConversationParticipantRepository conversationParticipantRepository;
+    private final UserServiceClient userServiceClient;
 
     @Transactional
     public UUID createNewConversation(CreateConversationRequest conversationRequest) {
@@ -37,6 +41,13 @@ public class ConversationService {
         List<UUID> allParticipants = new ArrayList<>(conversationRequest.participantIds());
         allParticipants.add(conversationRequest.createdBy());
 
+        try {
+            userServiceClient.validateUsers(allParticipants);
+        } catch (FeignException.NotFound e) {
+            throw new InvalidConversationRequestException("One or more users not found");
+        }
+
+
         List<ConversationParticipant> participants = allParticipants.stream()
                 .map(participantId -> {
                     ConversationParticipantId cpId = new ConversationParticipantId();
@@ -51,5 +62,13 @@ public class ConversationService {
         conversation.setParticipants(participants);
         conversationRepository.save(conversation);
         return conversation.getId();
+    }
+
+    @Transactional
+    public void deleteConversation(UUID conversationId) {
+        if (!conversationRepository.existsById(conversationId)) {
+            throw new ConversationNotFoundException("Conversation not found with id: " + conversationId);
+        }
+        conversationRepository.deleteById(conversationId);
     }
 }

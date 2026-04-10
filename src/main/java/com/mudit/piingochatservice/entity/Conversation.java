@@ -30,9 +30,8 @@ public class Conversation {
     @Column(name = "updated_at")
     private OffsetDateTime updatedAt;
 
-    @OneToMany(mappedBy = "conversation", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "conversation", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ConversationParticipant> participants;
-
 
     @PrePersist
     protected void onCreate() {
