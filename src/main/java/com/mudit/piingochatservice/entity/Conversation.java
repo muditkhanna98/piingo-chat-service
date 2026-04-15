@@ -33,6 +33,9 @@ public class Conversation {
     @OneToMany(mappedBy = "conversation", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ConversationParticipant> participants;
 
+    @OneToMany(mappedBy = "conversation", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Message> messages;
+
     @PrePersist
     protected void onCreate() {
         createdAt = OffsetDateTime.now();

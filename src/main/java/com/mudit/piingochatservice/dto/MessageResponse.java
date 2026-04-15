@@ -10,7 +10,7 @@ public record MessageResponse(UUID id, UUID conversationId, UUID senderId, Strin
     public static MessageResponse from(Message message) {
         return new MessageResponse(
                 message.getId(),
-                message.getConversationId(),
+                message.getConversation().getId(),
                 message.getSenderId(),
                 message.getContent(),
                 message.getSentAt(),
